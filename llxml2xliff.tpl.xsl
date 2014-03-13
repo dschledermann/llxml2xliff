@@ -3,9 +3,17 @@
   
   <xsl:template match="//meta"/>
 
+  <xsl:param name="target_lang_out"/>
+
   <xsl:template match="/">
     <xliff version="1.0">
-      <file source-language="en" target-language="###TARGET_LANG_OUT###" datatype="plaintext" original="messages"/>
+      <xsl:element name="file">
+	<xsl:attribute name="source-language">en</xsl:attribute>
+	<xsl:attribute name="target-language"><xsl:value-of select="$target_lang_out"/></xsl:attribute>
+	<xsl:attribute name="datatype">plaintext</xsl:attribute>
+	<xsl:attribute name="original">messages</xsl:attribute>
+      </xsl:element>
+
       <header/>
       <body>
 	<xsl:apply-templates/>
@@ -15,16 +23,19 @@
 
 
   <xsl:template match="//languageKey[@index='default']/label">
-    <xsl:element name="trans-unit">
-      <xsl:attribute name="xml:space">preserve</xsl:attribute>
-      <xsl:attribute name="approved">yes</xsl:attribute>
-      <xsl:attribute name="id"><xsl:value-of select="@index"/></xsl:attribute>
-      
-      <xsl:variable name="indexval" select="@index"/>
+    <xsl:variable name="indexval" select="@index"/>
 
-      <source><xsl:apply-templates /></source>
-      <target><xsl:value-of select="//languageKey[@index='###TARGET_LANG_IN###']/label[@index=$indexval]"/></target>
-    </xsl:element>        
+    <xsl:if test="//languageKey[@index=$target_lang_in]/label[@index=$indexval]">
+      <xsl:element name="trans-unit">
+	<xsl:attribute name="xml:space">preserve</xsl:attribute>
+	<xsl:attribute name="approved">yes</xsl:attribute>
+	<xsl:attribute name="id"><xsl:value-of select="@index"/></xsl:attribute>
+	
+	<source><xsl:apply-templates /></source>
+	<target><xsl:value-of select="//languageKey[@index=$target_lang_in]/label[@index=$indexval]"/></target>
+      </xsl:element>        
+    </xsl:if>
+
   </xsl:template>
 
   <xsl:template match="//languageKey[@index!='default']/label"/>
