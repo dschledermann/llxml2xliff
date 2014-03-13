@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   
-  <xsl:template match="//meta"/>
-
+  <xsl:output method="xml" indent="yes"/>
   <xsl:param name="target_lang_out"/>
+  <xsl:param name="target_lang_in"/>
+
+  <xsl:template match="//meta"/>
 
   <xsl:template match="/">
     <xliff version="1.0">
@@ -21,23 +23,21 @@
     </xliff>
   </xsl:template>
 
-
-  <xsl:template match="//languageKey[@index='default']/label">
+  <xsl:template match="//languageKey/label">
     <xsl:variable name="indexval" select="@index"/>
+    <xsl:variable name="label_lang" select="../@index"/>
 
-    <xsl:if test="//languageKey[@index=$target_lang_in]/label[@index=$indexval]">
+    <xsl:if test="$label_lang = $target_lang_in">
       <xsl:element name="trans-unit">
 	<xsl:attribute name="xml:space">preserve</xsl:attribute>
 	<xsl:attribute name="approved">yes</xsl:attribute>
 	<xsl:attribute name="id"><xsl:value-of select="@index"/></xsl:attribute>
-	
-	<source><xsl:apply-templates /></source>
-	<target><xsl:value-of select="//languageKey[@index=$target_lang_in]/label[@index=$indexval]"/></target>
-      </xsl:element>        
+
+	<source><xsl:value-of select="//languageKey[@index = 'default']/label[@index=$indexval]"/></source>
+	<target><xsl:apply-templates /></target>
+      </xsl:element>
     </xsl:if>
 
   </xsl:template>
-
-  <xsl:template match="//languageKey[@index!='default']/label"/>
 
 </xsl:stylesheet>
