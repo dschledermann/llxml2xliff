@@ -5,7 +5,7 @@
 
   <xsl:template match="/">
     <xliff version="1.0">
-      <file source-language="en" target-language="da" datatype="plaintext" original="messages"/>
+      <file source-language="en" target-language="###TARGET_LANG_OUT###" datatype="plaintext" original="messages"/>
       <header/>
       <body>
 	<xsl:apply-templates/>
@@ -23,7 +23,7 @@
       <xsl:variable name="indexval" select="@index"/>
 
       <source><xsl:apply-templates /></source>
-      <target><xsl:value-of select="//languageKey[@index='dk']/label[@index=$indexval]"/></target>
+      <target><xsl:value-of select="//languageKey[@index='###TARGET_LANG_IN###']/label[@index=$indexval]"/></target>
     </xsl:element>        
   </xsl:template>
 
