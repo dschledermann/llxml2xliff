@@ -1,0 +1,40 @@
+#!/bin/sh
+
+PATH_SCRIPT=$(dirname $0)
+
+## Select the llfile
+if [ ! -f "$1" ]
+then
+    echo "Provide an original llxml-file"
+    exit 1
+else 
+    LLXML=$1
+fi
+
+## Get the requested language
+if [ -z "$2" ]
+then
+    echo "Provide the language you wish to extract to xlf."
+    exit 2
+else
+    TARGET_LANG_OUT=$2
+fi
+
+if [ ! -z "$3" ]
+then
+    TARGET_LANG_IN=$3
+else
+    TARGET_LANG_IN=$TARGET_LANG_OUT
+fi
+
+## Wash the target name
+OUTFILE=$(echo $TARGET_LANG_OUT.$LLXML | sed -e 's/\.xml$/.xlf/')
+
+## Process
+if [ -f "$OUTFILE" ]
+then
+    echo "$OUTFILE already exist"
+    exit 3
+else
+    xsltproc --stringparam target_lang_out $TARGET_LANG_OUT --stringparam target_lang_in $TARGET_LANG_IN $PATH_SCRIPT/llxml2xliff.xsl $LLXML | xmllint --format - > $OUTFILE
+fi
