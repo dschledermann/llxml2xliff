@@ -36,5 +36,5 @@ then
     echo "$OUTFILE already exist"
     exit 3
 else
-    xsltproc --stringparam target_lang_out $TARGET_LANG_OUT --stringparam target_lang_in $TARGET_LANG_IN $PATH_SCRIPT/llxml2xliff.xsl $LLXML | xmllint --format - > $OUTFILE
+    xsltproc --stringparam target_lang_out $TARGET_LANG_OUT --stringparam target_lang_in $TARGET_LANG_IN $PATH_SCRIPT/llxml2xliff.xsl $LLXML | xmllint --noent --encode UTF-8 --format - > $OUTFILE
 fi
