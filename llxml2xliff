@@ -28,7 +28,39 @@ else
 fi
 
 ## Wash the target name
-OUTFILE=$(echo $TARGET_LANG_OUT.$LLXML | sed -e 's/\.xml$/.xlf/')
+if [ "$2" = "default" ]
+then
+    OUTFILE=$(echo $LLXML | sed -e 's/\.xml$/.xlf/')
+else
+    OUTFILE=$(echo $TARGET_LANG_OUT.$LLXML | sed -e 's/\.xml$/.xlf/')
+fi
+
+## Get the product name / that is the extension key
+__get_extdir() {
+    while [ "$PWD" != "/" ] && [ ! -f ext_emconf.php ]
+    do
+	cd ..
+    done
+
+    if [ "$PWD" = "/" ]
+    then
+	echo "error"
+	return
+    fi
+
+    pwd | tr '/' "\n" | tail -n1
+}
+PRODUCT=$(__get_extdir)
+if [ "$PRODUCT" = "error" ]
+then
+    echo "Error: Failing to get product name"
+    exit 4
+fi
+
+
+## Get a proper date for the Xlf-file
+XLFDATE=$(date +%Y-%m-%dT%H:%M:%SZ)
+
 
 ## Process
 if [ -f "$OUTFILE" ]
@@ -36,5 +68,10 @@ then
     echo "$OUTFILE already exist"
     exit 3
 else
-    xsltproc --stringparam target_lang_out $TARGET_LANG_OUT --stringparam target_lang_in $TARGET_LANG_IN $PATH_SCRIPT/llxml2xliff.xsl $LLXML | xmllint --noent --encode UTF-8 --format - > $OUTFILE
+    xsltproc \
+	--stringparam target_lang_out $TARGET_LANG_OUT \
+	--stringparam product $PRODUCT \
+	--stringparam target_lang_in $TARGET_LANG_IN \
+	--stringparam xlfdate $XLFDATE \
+	$PATH_SCRIPT/llxml2xliff.xsl $LLXML | xmllint --noent --encode UTF-8 --format - > $OUTFILE
 fi

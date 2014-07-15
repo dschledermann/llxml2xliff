@@ -11,15 +11,21 @@
     <xliff version="1.0">
       <xsl:element name="file">
 	<xsl:attribute name="source-language">en</xsl:attribute>
-	<xsl:attribute name="target-language"><xsl:value-of select="$target_lang_out"/></xsl:attribute>
+	<xsl:if test="$target_lang_in != 'default'">
+	  <xsl:attribute name="target-language"><xsl:value-of select="$target_lang_out"/></xsl:attribute>
+	</xsl:if>
 	<xsl:attribute name="datatype">plaintext</xsl:attribute>
 	<xsl:attribute name="original">messages</xsl:attribute>
+	<xsl:attribute name="product-name"><xsl:value-of select="$product"/></xsl:attribute>
+	<xsl:attribute name="date"><xsl:value-of select="$xlfdate"/></xsl:attribute>
+
+	<header/>
+	<body>
+	  <xsl:apply-templates/>
+	</body>
+
       </xsl:element>
 
-      <header/>
-      <body>
-	<xsl:apply-templates/>
-      </body>
     </xliff>
   </xsl:template>
 
@@ -32,9 +38,12 @@
 	<xsl:attribute name="xml:space">preserve</xsl:attribute>
 	<xsl:attribute name="approved">yes</xsl:attribute>
 	<xsl:attribute name="id"><xsl:value-of select="@index"/></xsl:attribute>
-
+	
 	<source><xsl:value-of select="//languageKey[@index = 'default']/label[@index=$indexval]"/></source>
-	<target><xsl:apply-templates /></target>
+	
+	<xsl:if test="$target_lang_in != 'default'">
+	  <target><xsl:apply-templates /></target>
+	</xsl:if>
       </xsl:element>
     </xsl:if>
 
