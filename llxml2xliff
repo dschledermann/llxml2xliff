@@ -73,5 +73,8 @@ else
 	--stringparam product $PRODUCT \
 	--stringparam target_lang_in $TARGET_LANG_IN \
 	--stringparam xlfdate $XLFDATE \
-	$PATH_SCRIPT/llxml2xliff.xsl $LLXML | xmllint --noent --encode UTF-8 --format - > $OUTFILE
+	$PATH_SCRIPT/llxml2xliff.xsl $LLXML | \
+	sed -e 's/^[ \t\v\f]*//g' -e 's/[ \t\v\f]*$//g' -e '/^$/d' | \
+	tr "\240\302" '  ' | \
+	xmllint --noent --encode UTF-8 --format - > $OUTFILE
 fi
