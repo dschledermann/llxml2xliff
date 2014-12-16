@@ -5,6 +5,8 @@
   <xsl:param name="target_lang_out"/>
   <xsl:param name="target_lang_in"/>
 
+  <xsl:template match="//orig_hash"/>
+  <xsl:template match="//orig_text"/>
   <xsl:template match="//meta"/>
 
   <xsl:template match="/">
@@ -29,7 +31,7 @@
     </xliff>
   </xsl:template>
 
-  <xsl:template match="//languageKey/label">
+  <xsl:template match="/T3locallang/data/languageKey/label">
     <xsl:variable name="indexval" select="@index"/>
     <xsl:variable name="label_lang" select="../@index"/>
 
@@ -39,7 +41,7 @@
 	<xsl:attribute name="approved">yes</xsl:attribute>
 	<xsl:attribute name="id"><xsl:value-of select="@index"/></xsl:attribute>
 	
-	<source><xsl:value-of select="//languageKey[@index = 'default']/label[@index=$indexval]"/></source>
+	<source><xsl:value-of select="/T3locallang/data/languageKey[@index = 'default']/label[@index=$indexval]"/></source>
 	
 	<xsl:if test="$target_lang_in != 'default'">
 	  <target><xsl:apply-templates /></target>
